@@ -4,8 +4,24 @@
 
 # Teslo API
 
-1. Levantar base de daods
+1. Clone projeto
+...
+
+
+2. yarn install
+...
+
+3. Levantar base de daods
+...
+
+4. alterar variaveis de entorno
+...
+
+5. clonar .env.template
 ...
 
 docker compose up -d
 ...
+
+6. levantar yarn start:dev
+
