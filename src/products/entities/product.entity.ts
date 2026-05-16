@@ -1,40 +1,45 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import slugify from "slugify"
 
 @Entity()
 export class Product {
 
     @PrimaryGeneratedColumn('uuid')
-    id:string;
+    id: string;
 
-    @Column('text',{unique:true})
-    title:string;
+    @Column('text', { unique: true })
+    title: string;
 
-    @Column('float',{default:0})
-    price:number;
+    @Column('float', { default: 0 })
+    price: number;
 
-    @Column('text',{nullable:true})
-    description:string;
+    @Column('text', { nullable: true })
+    description: string;
 
-    @Column('text',{unique:true})
-    slug:string;
+    @Column('text', { unique: true })
+    slug: string;
 
-    @Column('int',{default:0})
-    stock:number;
+    @Column('int', { default: 0 })
+    stock: number;
 
-    @Column('text',{array:true, default:[]})
-    sizes:string[];
+    @Column('text', { array: true, default: [] })
+    sizes: string[];
 
     @Column('text')
-    gender:string;
+    gender: string;
 
     @Column('text', { array: true, default: [] })
     tags: string[];
 
     @BeforeInsert()
-    checkSlugInsert(){
-        if(!this.slug){
+    checkSlugInsert() {
+        if (!this.slug) {
             this.slug = this.title;
         }
-        this.slug = this.slug.toLowerCase().replaceAll(' ','_').replaceAll("'",''); 
+        this.slug = slugify(this.slug, {
+            lower: true,      // convert to lower case
+            strict: true,     // strip special characters except replacement
+            replacement: '-'  // replace spaces with replacement character, defaults to '-'
+        });
     }
 }

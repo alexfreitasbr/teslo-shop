@@ -14,12 +14,12 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-  ){}
+  ) { }
 
 
   async create(createProductDto: CreateProductDto) {
 
-    try{
+    try {
       const product = this.productRepository.create(createProductDto);
       await this.productRepository.save(product);
       return product;
@@ -27,29 +27,34 @@ export class ProductsService {
       this.handleExeptions(error);
     }
 
-    return 'This action adds a new product';
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll() {
+    const product = await this.productRepository.find()
+    if (!product) throw new BadRequestException(`Trouble to access data base`)
+    return product;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    const product = await this.productRepository.findBy({ id: id })
+    if (!product) throw new BadRequestException(`Product with id ${id} not found`)
+    return product;
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    const result = await this.productRepository.delete(id);
+    if (result.affected === 0) throw new BadRequestException(`Product with id ${id} not found`)
+    return result;
   }
 
   private handleExeptions(error: any) {
-      if(error.code === '23505') throw new BadRequestException(error.detail);
+    if (error.code === '23505') throw new BadRequestException(error.detail);
 
-      this.logger.error(error);
-      throw new InternalServerErrorException('Unexpected error, check server logs');
+    this.logger.error(error);
+    throw new InternalServerErrorException('Unexpected error, check server logs');
   }
 }
