@@ -4,6 +4,9 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { validate as uuidValidate } from 'uuid';
+
 
 @Injectable()
 export class ProductsService {
@@ -29,20 +32,39 @@ export class ProductsService {
 
   }
 
-  async findAll() {
-    const product = await this.productRepository.find()
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, skip = 0 } = paginationDto;
+
+    const product = await this.productRepository.find({ take: limit, skip: skip })
     if (!product) throw new BadRequestException(`Trouble to access data base`)
     return product;
   }
 
-  async findOne(id: string) {
-    const product = await this.productRepository.findBy({ id: id })
-    if (!product) throw new BadRequestException(`Product with id ${id} not found`)
-    return product;
+  async findOne(term: string) {
+    let product: Product[] | Product | null
+
+    if (uuidValidate(term)) {
+      product = await this.productRepository.findBy({ id: term })
+    } else {
+      const queryBuilder = this.productRepository.createQueryBuilder();
+      product = await queryBuilder
+        .where('UPPER(title) =:title or slug=:slug', {
+          title: term.toLocaleUpperCase(),
+          slug: term.toLocaleLowerCase()
+        }).getOne()
+    }
+
+      if (!product) throw new BadRequestException(`Product with term ${term} not found`)
+      return product
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    let product = await this.findOne(id);
+    if (!product) throw new BadRequestException(`Product with id ${id} not found`)
+
+    const updatedProduct = await this.productRepository.update(id, updateProductDto);
+
+    return updatedProduct
   }
 
   async remove(id: string) {
@@ -58,3 +80,6 @@ export class ProductsService {
     throw new InternalServerErrorException('Unexpected error, check server logs');
   }
 }
+
+
+
