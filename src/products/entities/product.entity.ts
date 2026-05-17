@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import slugify from "slugify"
 
 @Entity()
@@ -33,6 +33,18 @@ export class Product {
 
     @BeforeInsert()
     checkSlugInsert() {
+        if (!this.slug) {
+            this.slug = this.title;
+        }
+        this.slug = slugify(this.slug, {
+            lower: true,      // convert to lower case
+            strict: true,     // strip special characters except replacement
+            replacement: '-'  // replace spaces with replacement character, defaults to '-'
+        });
+    }
+
+    @BeforeUpdate()
+    checkSlugUpdate() {
         if (!this.slug) {
             this.slug = this.title;
         }
