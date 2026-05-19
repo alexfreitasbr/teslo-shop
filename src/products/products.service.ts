@@ -62,7 +62,6 @@ export class ProductsService {
   }
 
   async findOne(term: string) {
-    console.log("findOne")
     let product: Product | null;
     if (uuidValidate(term)) {
       product = await this.productRepository.findOneBy({ id: term });
@@ -82,7 +81,6 @@ export class ProductsService {
   } 
 
   async findOnePlain(term: string) {
-    console.log("findoneplain")
     const { images = [], ...rest } = await this.findOne(term);
     return {
       ...rest,
