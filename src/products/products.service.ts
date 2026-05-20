@@ -102,8 +102,6 @@ export class ProductsService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
-  
-
     try {
       if(images){
         await queryRunner.manager.delete(ProductImage, { product: { id } });
