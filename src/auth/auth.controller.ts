@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, UpdateUserDto, LoginUserDto  } from './dto';
+import { AuthGuard } from '@nestjs/passport';
 
 
 
@@ -24,7 +25,10 @@ export class AuthController {
     return this.authService.update(id, updateProductDto);
   }
 
+   @Get('private')
+   @UseGuards(AuthGuard())
+    testingPrivateRoute() {
+    return "hoal test private"
+  }
 }
 
-
-// http://localhost:3000/api/register
