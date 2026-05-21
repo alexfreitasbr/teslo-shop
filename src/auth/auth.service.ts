@@ -42,7 +42,7 @@ export class AuthService {
       
       return {
       ...user,
-      token: this.getJwtToken({email: user.email})
+      token: this.getJwtToken({id: user.id})
     }
 
     } catch (error: any) {
@@ -56,7 +56,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true }
+      select: { password: true, id: true}
     })
 
     if(!user) throw new UnauthorizedException('Credentials are not valid(email')
@@ -66,7 +66,7 @@ export class AuthService {
     
     return {
       ...user,
-      token: this.getJwtToken({email: user.email})
+      token: this.getJwtToken({id: user.id})
     }
   }
 
