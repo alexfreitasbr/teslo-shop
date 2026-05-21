@@ -28,7 +28,11 @@ export class AuthController {
    @Get('private')
    @UseGuards(AuthGuard())
     testingPrivateRoute() {
-    return "hoal test private"
+    return {
+      ok: true,
+      messsage:"hoal test private",
+      user:{name:'Fernando'}
+    }
   }
 }
 
