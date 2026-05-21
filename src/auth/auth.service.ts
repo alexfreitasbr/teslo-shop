@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import *as bcrypt from 'bcrypt';
-import { JwtPayLoad } from './interfaces/jwt-payload.interface';
+import { JwtPayLoad } from './interfaces';
 import { JwtService } from '@nestjs/jwt';
 
 
@@ -79,6 +79,7 @@ export class AuthService {
   // }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+      console.log(updateUserDto)
 
     const { password, ...userDto } = updateUserDto;
 

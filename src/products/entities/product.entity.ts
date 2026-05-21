@@ -1,6 +1,7 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import slugify from "slugify"
 import { ProductImage } from "./product-image.entity";
+import { User } from "src/auth/entities/user.entity";
 
 @Entity()
 export class Product {
@@ -32,6 +33,7 @@ export class Product {
     @Column('text', { array: true, default: [] })
     tags: string[];
 
+
     @OneToMany(
         () => ProductImage,
         (productImage) => productImage.product,
@@ -39,7 +41,12 @@ export class Product {
     )
     images?: ProductImage[];
 
-    
+    @ManyToOne(
+        () => User,
+        (user:User ) => user.product,
+        { eager: true }
+    )
+    user:User;
 
 
 

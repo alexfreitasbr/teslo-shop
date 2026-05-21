@@ -1,34 +1,43 @@
-import { BeforeInsert, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from "../../products/entities";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('users')
 export class User {
     @PrimaryGeneratedColumn('uuid')
-    id:string;
+    id: string;
 
     @Column('text', { unique: true })
-    email:string;
+    email: string;
 
-    @Column('text',{
-        select:false
+    @Column('text', {
+        select: false
     })
-    password:string;
-    
-    @Column('text')
-    fullName:string;
+    password: string;
 
-    @Column('bool', { default: true})
+    @Column('text')
+    fullName: string;
+
+    @Column('bool', { default: true })
     isActive: boolean;
-    
+
     @Column('text', { array: true, default: ['user'] })
-    role: string[];
+    roles: string[];
+
+    @OneToMany(
+        () => Product,
+        (product: Product) => product.user,
+    )
+    product: Product;
+       
+    
 
     @BeforeInsert()
-    checkFieldsBeforeInsert(){
+    checkFieldsBeforeInsert() {
         this.email = this.email.toLowerCase().trim();
     }
 
     @BeforeInsert()
-    checkFieldsBeforeUpdate(){
+    checkFieldsBeforeUpdate() {
         this.checkFieldsBeforeInsert();
     }
 }

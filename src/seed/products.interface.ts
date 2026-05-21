@@ -14,7 +14,15 @@ export interface SeedProduct {
 type ValidSizes = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL';
 type ValidTypes = 'shirts'|'pants'|'hoodies'|'hats';
 
+interface SeedUser{
+    email: string;
+    password: string;
+    roles: string[];
+    fullName: string;
+}
+
 
 export interface SeedData {
+    users: SeedUser[];
     products: SeedProduct[];
 }
