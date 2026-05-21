@@ -14,9 +14,6 @@ export class AuthService {
 
   private readonly logger = new Logger('UsersService');
 
-
-
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -114,5 +111,13 @@ export class AuthService {
     const token = this.jwtService.sign( payload );
     return token;
 
+  }
+
+  async checkAuthStatus(user:User){
+    return {
+      ...user,
+      token: this.getJwtToken({id: user.id})
+    }
+  
   }
 }
