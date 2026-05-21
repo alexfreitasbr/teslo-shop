@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe, UseGuards, Headers  } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, UpdateUserDto, LoginUserDto  } from './dto';
 import { AuthGuard } from '@nestjs/passport';
+import { RawHeaders, GetUser } from './decorators';
+import { User } from './entities/user.entity';
+import type { IncomingHttpHeaders } from 'node:http';
 
 
 
@@ -27,11 +30,20 @@ export class AuthController {
 
    @Get('private')
    @UseGuards(AuthGuard())
-    testingPrivateRoute() {
+    testingPrivateRoute(
+      @GetUser() user:User,
+      @GetUser(["email","fullName"]) userEmail:[],
+      @RawHeaders() rawHeader:[],
+      @Headers() headers: IncomingHttpHeaders,
+    ) {
     return {
+
       ok: true,
       messsage:"hoal test private",
-      user:{name:'Fernando'}
+      user:user,
+      userEmail:userEmail,
+      rawHeader:rawHeader,
+      header:headers
     }
   }
 }
